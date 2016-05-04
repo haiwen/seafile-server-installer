@@ -199,10 +199,11 @@ RewriteEngine on
 # Redirect to https
 RewriteCond %{HTTPS} !=on
 RewriteCond %{ENV:HTTPS} !=on
-RewriteRule ^(.*)$ https://WHOAMI.HOSTNAME/$1 [L,R=301]
+RewriteRule ^(.*)$ https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 
 # Port of seafile httpserver (compare ~/haiwen/seafile-data/seafile.conf)
 RewriteRule ^seafhttp/(.*)$ http://localhost:FILESERVER_PORT/$1 [QSA,P,L]
+RewriteRule ^files/(.*)$ http://localhost:FILESERVER_PORT/files/$1 [QSA,P,L]
 
 RewriteRule ^/(seafmedia.*)$ /$1 [QSA,L,PT]
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -230,6 +231,7 @@ sys.path.insert(0, seafile_directory + '/seafile-server-latest/seahub')
 
 # Set environment variables (compare ~/haiwen/seafile-server-latest/seahub.sh)
 os.environ['CCNET_CONF_DIR'] = seafile_directory + '/ccnet'
+os.environ['SEAFILE_CENTRAL_CONF_DIR'] = seafile_directory + '/conf'
 os.environ['SEAHUB_LOG_DIR'] = seafile_directory + '/logs'
 os.environ['SEAFILE_CONF_DIR'] = seafile_directory + '/seafile-data'
 
@@ -259,7 +261,7 @@ chmod 755 ~/fcgi-bin/seahub
 cat > ~/bin/seafile <<'ENDOFILE'
 #!/bin/bash
 # Short-Description: Seafile server
-# Description:       Start Seafile server
+# Description:       Start Seafile and Seahub server
 ### END INIT INFO
 # Author: Alexander Jackson <alexander.jackson@seafile.de>
 #
@@ -267,13 +269,16 @@ cat > ~/bin/seafile <<'ENDOFILE'
 seafile_dir=~/seafile
 script_path=${seafile_dir}/seafile-server-latest
 seafile_init_log=${seafile_dir}/logs/seafile.init.log
+SEAHUB_PORT="SEAHUB_PORT"
 
 case "$1" in
         start)
                 ${script_path}/seafile.sh start >> ${seafile_init_log}
+                ${script_path}/seahub.sh start-fastcgi $SEAHUB_PORT >> ${seafile_init_log}
         ;;
         restart)
                 ${script_path}/seafile.sh restart >> ${seafile_init_log}
+                ${script_path}/seahub.sh restart-fastcgi $SEAHUB_PORT >> ${seafile_init_log}
         ;;
         stop)
                 ${script_path}/seafile.sh $1 >> ${seafile_init_log} && \
@@ -308,7 +313,7 @@ DEFAULT_SEAHUB_DB=${TOPDIR}/seahub.db
 DEFAULT_CONF_DIR=${TOPDIR}/conf
 SEAFILE_DATA_DIR=${TOPDIR}/seafile-data
 LIBRARY_TEMPLATE_DIR=${SEAFILE_DATA_DIR}/library-template
-DEST_SETTINGS_PY=${TOPDIR}/seahub_settings.py
+DEST_SETTINGS_PY=${DEFAULT_CONF_DIR}/seahub_settings.py
 CCNET_INIT=${INSTALLPATH}/seafile/bin/ccnet-init
 SEAF_SERVER_INIT=${INSTALLPATH}/seafile/bin/seaf-server-init
 MEDIA_DIR=${INSTALLPATH}/seahub/media
@@ -321,11 +326,11 @@ SEAFILE_SERVER_SYMLINK=${TOPDIR}/seafile-server-latest
 # Create ccnet conf
 # -------------------------------------------
 export SEAFILE_LD_LIBRARY_PATH=${INSTALLPATH}/seafile/lib/:${INSTALLPATH}/seafile/lib64:${LD_LIBRARY_PATH}
-LD_LIBRARY_PATH=$SEAFILE_LD_LIBRARY_PATH "${CCNET_INIT}" -c "${DEFAULT_CCNET_CONF_DIR}" \
+LD_LIBRARY_PATH=$SEAFILE_LD_LIBRARY_PATH "${CCNET_INIT}" -c "${DEFAULT_CONF_DIR}" \
   --name "${SERVER_NAME}" --port "${CCNET_PORT}" --host "${HOSTNAME}"
 
 # Fix service url
-eval "sed -i 's/^SERVICE_URL.*/SERVICE_URL = https:\/\/${WHOAMI}.${HOSTNAME}/' ${DEFAULT_CCNET_CONF_DIR}/ccnet.conf"
+eval "sed -i 's/^SERVICE_URL.*/SERVICE_URL = https:\/\/${WHOAMI}.${HOSTNAME}/' ${DEFAULT_CONF_DIR}/ccnet.conf"
 
 
 # -------------------------------------------
@@ -338,7 +343,7 @@ LD_LIBRARY_PATH=$SEAFILE_LD_LIBRARY_PATH ${SEAF_SERVER_INIT} --seafile-dir "${SE
 # -------------------------------------------
 # Write seafile.ini
 # -------------------------------------------
-echo "${SEAFILE_DATA_DIR}" > "${DEFAULT_CCNET_CONF_DIR}/seafile.ini"
+echo "${SEAFILE_DATA_DIR}" > "${DEFAULT_CONF_DIR}/seafile.ini"
 
 
 # -------------------------------------------
@@ -400,7 +405,7 @@ cp -f ${SRC_DOCS_DIR}/*.doc ${LIBRARY_TEMPLATE_DIR}
 # -------------------------------------------
 SEAFILESQLPW=$(grep -A10000  "\[client\]" ${HOME}/.my.cnf | grep -m1 password | awk -F'=' {'print $2'} | awk -F' ' {'print $1'})
 
-cat >> ${DEFAULT_CCNET_CONF_DIR}/ccnet.conf <<EOF
+cat >> ${DEFAULT_CONF_DIR}/ccnet.conf <<EOF
 [Database]
 ENGINE = mysql
 HOST = 127.0.0.1
@@ -415,7 +420,7 @@ EOF
 # -------------------------------------------
 # Configuring seafile.conf
 # -------------------------------------------
-cat >> ${TOPDIR}/seafile-data/seafile.conf <<EOF
+cat >> ${DEFAULT_CONF_DIR}/seafile.conf <<EOF
 
 [database]
 type = mysql
@@ -491,8 +496,9 @@ eval "sed -i 's/= ask_admin_password()/= \"${SEAFILE_ADMIN_PW}\"/' ${INSTALLPATH
 # Start and stop Seafile eco system. This generates the initial admin user.
 # -------------------------------------------
 ${TOPDIR}/seafile-server-${SEAFILE_VERSION}/seafile.sh start
-${TOPDIR}/seafile-server-${SEAFILE_VERSION}/seahub.sh start ${SEAHUB_PORT}
-${TOPDIR}/seafile-server-${SEAFILE_VERSION}/seahub.sh stop
+#${TOPDIR}/seafile-server-${SEAFILE_VERSION}/seahub.sh start ${SEAHUB_PORT}
+#${TOPDIR}/seafile-server-${SEAFILE_VERSION}/seahub.sh stop
+${TOPDIR}/seafile-server-${SEAFILE_VERSION}/seafile.sh stop
 
 
 # -------------------------------------------
@@ -513,15 +519,17 @@ cat > ~/seafile/seafile-ce_uberspace.log <<EOF
   Admin Password:      ${SEAFILE_ADMIN_PW}
   Seafile Data Dir:    ${SEAFILE_DATA_DIR}
 
+  *** no ports open! use RewriteRule mit Proxy ***
   SEAHUB_PORT:         $SEAHUB_PORT
   FILESERVER_PORT:     $FILESERVER_PORT
   SERVER_PORT:         $SERVER_PORT
   SEAFILE_PORT:        $SEAFILE_PORT
   SEAFDAV_PORT:        $SEAFDAV_PORT
+  https://wiki.uberspace.de/webserver:htaccess?s[]=proxy#rewriterule_mit_proxy
 
   This report is also saved to ~/seafile/seafile-ce_uberspace.log
 
-  You can start and stop your Seafile server with the command 'seafile'
+  You can start and stop your Seafile and Seahub server with the command 'seafile'
   -----------------------------------------------------------------
   Usage: seafile {start|stop|restart}
 
