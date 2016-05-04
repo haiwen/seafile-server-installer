@@ -1,3 +1,5 @@
+Important: The repository is maintained at [Seafile/seafile-server-installer](https://github.com/Seafile/seafile-server-installer) now.
+
 # Auto install Seafile Server CE* and PRO**
 
 These installers offer a quick and easy way to set up a production ready Seafile Server using MariaDB, Memcached and NGINX as a reverse proxy in under 5 minutes.
