@@ -16,15 +16,8 @@ Just select the corresponding installer for your OS. All scripts are meant to ru
 
 ### Minimal installations only!
 
-#### [Community Edition](https://github.com/haiwen/seafile-server-installer/tree/master/community-edition)
-1. Debian Wheezy & Jessie
-2. Ubuntu Trusty
-3. CentOS 7
-
-#### Professional Edition
-1. Debian Wheezy & Jessie
-2. Ubuntu 16.04
-3. CentOS 7
+1. Ubuntu 16.04
+2. CentOS 7
 
 ## Caution
 Never run these scripts on a production server. They are more or less a one trick pony and could seriously damage production systems. Run it only once and
@@ -49,53 +42,16 @@ As a precaution I have added a few simple checks to abort installation if any of
 
 
 ## Installation
-### Seafile Server CE
-Except for the Uberspace installer **all installers need to run as root**. Running them with sudo will not work! Login as root or switch to root with sudo
-su before installing with these installers. Make sure your OS package repository (e.g. /etc/apt/sources.list) is set correct before proceeding.
 
-For **Debian Wheezy and Jessie (32bit and 64bit)**:
-
-
-    apt-get install lsb-release -y
-    cd /root
-    wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile_debian
-    bash seafile_debian
-
-
-For **Ubuntu Trusty (64bit)**:
-
-    sudo su
-    cd /root
-    wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/community-edition/seafile-ce_ubuntu-trusty-amd64
-    bash seafile-ce_ubuntu-trusty-amd64
-
-
-For **CentOS 7 (64bit)**
-
-    cd /root
-    wget --no-check-certificate https://raw.githubusercontent.com/SeafileDE/seafile-server-installer/master/seafile_centos
-    bash seafile_centos
-
-
-### Seafile Server PRO
-You will have to download the Seafile Professional Server package prior to the installation and save it to /usr/src/seafile/. Make sure the variable `SEAFILE_VERSION` is set to the downloaded version before proceeding with the installation.
-
-
-For **Debian Wheezy and Jessie (64bit only)** run the following lines as root
-
-    apt-get install lsb-release -y
-    cd /root
-    wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile_debian
-    bash seafile_debian
-
+For Seafile Professional Server, you will have to download the package prior to the installation and save it to /opt/.
 
 For **CentOS 7 (64bit)**
 
     cd /root
     wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile_centos
-    bash seafile_centos
+    bash seafile_centos 6.0.2
 
-For **Ubuntu 16.04 (64bit)**, you will have to save Seafile Professional Server package to /opt/.
+For **Ubuntu 16.04 (64bit)**
 
     cd /root
     wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile_ubuntu
@@ -105,7 +61,7 @@ For **Ubuntu 16.04 (64bit)**, you will have to save Seafile Professional Server 
 ## FAQs
 
 ***Where do I find the full installation log?***
-At `/root/[installer_name]_installation.log`
+At `/opt/seafile/[installer_name]_installation.log`
 
 ***What's the unprivileged Seafile users name***
 seafile
@@ -128,7 +84,7 @@ BTW: Ideas on how to automate upgrades are very welcome!
 2. Follow the suggested steps at the end of the installation to finalize your Seafile server installation.
 
 ## Troubleshooting
-If your installation did not finish successfully, check `/root/[installer_name]_installation.log` for errors.
+If your installation did not finish successfully, check `/opt/seafile/[installer_name]_installation.log` for errors.
 
 
 ## License

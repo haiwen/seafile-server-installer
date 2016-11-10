@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# seafile-server-installer/seafile-server-ubuntu-16-04-amd64
+# seafile-server-installer/seafile-ubuntu
 #
 # Copyright 2015, Alexander Jackson <alexander.jackson@seafile.de>
 # Copyright 2016, Zheng Xie <xie.zheng@seafile.com>
@@ -100,6 +100,8 @@ echo
 # Vars
 # -------------------------------------------
 SEAFILE_ADMIN=admin@seafile.local
+SEAFILE_SERVER_USER=seafile
+SEAFILE_SERVER_HOME=/opt/seafile
 SERVER_NAME=$(hostname -s)
 IP_OR_DOMAIN=$(hostname -i)
 SEAFILE_VERSION=$1
@@ -136,6 +138,15 @@ if [[ -d "/opt/seafile/" ]] ;
 then
   echo "  Aborting because directory /opt/seafile/ already exist" ; exit 1
 fi
+
+# -------------------------------------------
+# Abort if seafile user exists
+# -------------------------------------------
+if getent passwd ${SEAFILE_SERVER_USER} > /dev/null 2>&1 ;
+then
+  echo "Aborting because user ${SEAFILE_SERVER_USER} already exist" ; exit 1
+fi
+
 
 # -------------------------------------------
 # Additional requirements
@@ -296,9 +307,9 @@ cat > /etc/init.d/seafile-server <<'EOF'
 # Description:       Start Seafile server
 ### END INIT INFO
 
-# Author: Alexander Jackson <alexander.jackson@seafile.com.de>
+# Author: Zheng Xie <xie.zheng@seafile.com>
 
-# Change the value of "seafile_dir" to your path of seafile installation
+user=seafile
 seafile_dir=/opt/seafile
 script_path=${seafile_dir}/seafile-server-latest
 seafile_init_log=${seafile_dir}/logs/seafile.init.log
@@ -311,26 +322,26 @@ fastcgi_port=8000
 
 case "$1" in
         start)
-                ${script_path}/seafile.sh start >> ${seafile_init_log}
+                sudo -u ${user} ${script_path}/seafile.sh start >> ${seafile_init_log}
                 if [  $fastcgi = true ];
                 then
-                        ${script_path}/seahub.sh start-fastcgi ${fastcgi_port} >> ${seahub_init_log}
+                        sudo -u ${user} ${script_path}/seahub.sh start-fastcgi ${fastcgi_port} >> ${seahub_init_log}
                 else
-                        ${script_path}/seahub.sh start >> ${seahub_init_log}
+                        sudo -u ${user} ${script_path}/seahub.sh start >> ${seahub_init_log}
                 fi
         ;;
         restart)
-                ${script_path}/seafile.sh restart >> ${seafile_init_log}
+                sudo -u ${user} ${script_path}/seafile.sh restart >> ${seafile_init_log}
                 if [  $fastcgi = true ];
                 then
-                        ${script_path}/seahub.sh restart-fastcgi ${fastcgi_port} >> ${seahub_init_log}
+                        sudo -u ${user} ${script_path}/seahub.sh restart-fastcgi ${fastcgi_port} >> ${seahub_init_log}
                 else
-                        ${script_path}/seahub.sh restart >> ${seahub_init_log}
+                        sudo -u ${user} ${script_path}/seahub.sh restart >> ${seahub_init_log}
                 fi
         ;;
         stop)
-                ${script_path}/seafile.sh $1 >> ${seafile_init_log}
-                ${script_path}/seahub.sh $1 >> ${seahub_init_log}
+                sudo -u ${user} ${script_path}/seafile.sh $1 >> ${seafile_init_log}
+                sudo -u ${user} ${script_path}/seahub.sh $1 >> ${seahub_init_log}
         ;;
         *)
                 echo "Usage: /etc/init.d/seafile-server {start|stop|restart}"
@@ -370,6 +381,11 @@ password=$SQLSEAFILEPW
 EOF
 
 chmod 600 /opt/seafile/.my.cnf
+
+# -------------------------------------------
+# Add seafile user
+# -------------------------------------------
+useradd --system --comment "${SEAFILE_SERVER_USER}" ${SEAFILE_SERVER_USER} --home-dir  ${SEAFILE_SERVER_HOME}
 
 # -------------------------------------------
 # Go to /opt/seafile/seafile-pro-server-${SEAFILE_VERSION}
@@ -456,8 +472,9 @@ eval "sed -i 's/= ask_admin_password()/= \"${SEAFILE_ADMIN_PW}\"/' ${INSTALLPATH
 # -------------------------------------------
 ${INSTALLPATH}/seafile.sh start
 ${INSTALLPATH}/seahub.sh start
-sleep 2                         # sleep for a while, otherwise seahub will not be stopped
+sleep 2
 ${INSTALLPATH}/seahub.sh stop
+sleep 1
 ${INSTALLPATH}/seafile.sh stop
 
 
@@ -471,6 +488,11 @@ if is_pro; then
     $PYTHON ${PRO_PY} setup --mysql --mysql_host=127.0.0.1 --mysql_port=3306 --mysql_user=seafile --mysql_password=${SQLSEAFILEPW} --mysql_db=seahub_db
     sed -i 's/enabled = false/enabled = true/' ${TOPDIR}/conf/seafevents.conf
 fi
+
+# -------------------------------------------
+# Fix permissions
+# -------------------------------------------
+chown ${SEAFILE_SERVER_USER}:${SEAFILE_SERVER_USER} -R ${SEAFILE_SERVER_HOME}
 
 # -------------------------------------------
 # Start seafile server
