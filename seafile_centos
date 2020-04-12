@@ -194,6 +194,11 @@ fi
 systemctl enable --now memcached
 
 # -------------------------------------------
+# Start memcached
+# -------------------------------------------
+systemctl start memcached
+
+# -------------------------------------------
 # Install nginx
 # -------------------------------------------
 yum install nginx -y
