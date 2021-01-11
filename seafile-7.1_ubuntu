@@ -146,6 +146,22 @@ then
   echo "Aborting because user ${SEAFILE_SERVER_USER} already exist" ; exit 1
 fi
 
+# -------------------------------------------
+# Add NGiNX Focal repo
+# -------------------------------------------
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
+
+cat << EOF > /etc/apt/sources.list.d/nginx.list
+deb https://nginx.org/packages/ubuntu/ focal nginx
+deb-src https://nginx.org/packages/ubuntu/ focal nginx
+EOF
+
+# -------------------------------------------
+# Add MariaDB 10.5 repo
+# -------------------------------------------
+sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+
+sudo add-apt-repository 'deb [arch=amd64,arm64,ppc64el] https://mirror.rackspace.com/mariadb/repo/10.5/ubuntu focal main'
 
 # -------------------------------------------
 # Additional requirements
@@ -161,14 +177,13 @@ pip3 install --timeout=3600 Pillow pylibmc captcha jinja2 sqlalchemy psd-tools \
 
 service memcached start
 
-
 # -------------------------------------------
 # Setup Nginx
 # -------------------------------------------
 
-rm /etc/nginx/sites-enabled/*
+rm /etc/nginx/conf.d/*
 
-cat > /etc/nginx/sites-available/seafile.conf << EOF
+cat > /etc/nginx/conf.d/seafile.conf << EOF
 log_format seafileformat '\$http_x_forwarded_for \$remote_addr [\$time_local] "\$request" \$status \$body_bytes_sent "\$http_referer" "\$http_user_agent" \$upstream_response_time';
 
 server {
@@ -224,7 +239,7 @@ server {
 }
 EOF
 
-ln -sf /etc/nginx/sites-available/seafile.conf /etc/nginx/sites-enabled/seafile.conf
+ln -sf /etc/nginx/conf.d/seafile.conf /etc/nginx/conf.d/seafile.conf
 
 service nginx restart
 
