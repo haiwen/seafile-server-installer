@@ -50,15 +50,16 @@ For Seafile Professional Server, you will have to download the package prior to 
     ```bash
     cd /root
     wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile-7.1_centos
-    bash seafile-7.1_centos 7.1.0
+    bash seafile-7.1_centos **7.1.x**
     ```
     
-    For **Ubuntu 18.04 (64bit)**
+    For **Ubuntu 18.04/20.04 (64bit)**
     ```bash
     cd /root
     wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile-7.1_ubuntu
-    bash seafile-7.1_ubuntu 7.1.0
+    bash seafile-7.1_ubuntu **7.1.x**
     ```
+    where instead of "7.1.x" specify proper sub-version
 
 - For Seafile 6.x.x/7.0.x
 
