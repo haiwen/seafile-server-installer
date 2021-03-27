@@ -1156,7 +1156,7 @@ cat > ${SEAFILE_SERVER_HOME}/$(basename ${0})_report.log<<EOF
   4) Harden system with port knocking, fail2ban, etc.
 
   5) Implement a backup routine for your Seafile server.
-     (A a first step, databases are backed up in ${SEAFILE_SERVER_BACKUPDIR}.)
+     (As a first step, databases are backed up in ${SEAFILE_SERVER_BACKUPDIR}.)
 
 
   Seafile support options
