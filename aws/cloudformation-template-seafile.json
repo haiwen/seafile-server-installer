@@ -158,7 +158,11 @@
                                     "_ubuntu\n",
                                     "export SEAFILE_PRO=0",
                                     "\n",
-                                    "bash seafile-8.0_ubuntu ",
+                                    "bash seafile-",
+                                    {
+                                        "Ref": "SeafileVersion"
+                                    },
+                                    "_ubuntu ",
                                     {
                                         "Ref": "SeafileVersion"
                                     },
