@@ -156,21 +156,7 @@
                                         "Ref": "SeafileVersion"
                                     },
                                     "_ubuntu\n",
-                                    "export SEAFILE_PRO=",
-                                    {
-                                        "Fn::If":[
-                                            {
-                                                "Fn::Equals":[
-                                                    {
-                                                        "Ref": "SeafileEdition"
-                                                    },
-                                                    "Seafile Pro"
-                                                ]
-                                            },
-                                            "1",
-                                            "0"
-                                        ]
-                                    },
+                                    "export SEAFILE_PRO=0",
                                     "\n",
                                     "bash seafile-8.0_ubuntu ",
                                     {
@@ -549,15 +535,6 @@
                     "t1.micro"
                 ],
                 "Default": "t2.micro"
-            },
-            "SeafileEdition":{
-                "Type": "String",
-                "Description": "Whether to install Seafile Pro Edition or Seafile Community Edition. Default: Seafile Community",
-                "Default": "Seafile Community",
-                "AllowedValues":[
-                    "Seafile Community",
-                    "Seafile Pro"
-                ]
             },
             "SeafileVersion":{
                 "Type": "String",

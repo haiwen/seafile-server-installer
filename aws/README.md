@@ -9,7 +9,6 @@ Available customization parameters:
 > </summary>
 > 
 > For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).</details>
-- Seafile Edition (Pro or Community)
 - Seafile Version (8.0, 9.0, 10.0 or 11.0)
 
 Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
