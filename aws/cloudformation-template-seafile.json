@@ -348,7 +348,7 @@
                                     "               WithDecryption=True",
                                     "           )",
                                     "           keyMaterial = response['Parameter']['Value']",
-                                    "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial, 'Combination':rCombination}, 'KeyPairDisplayFunctionInfo')",
+                                    "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial}, 'KeyPairDisplayFunctionInfo')",
                                     "   except Exception as e:",
                                     "       cfnresponse.send(event, context, cfnresponse.FAILED, {'ErrorMsg':traceback.format_exc()})"
                                 ]
@@ -517,7 +517,7 @@
         "Parameters": {
             "OS": {
                 "Type": "String",
-                "Description": "The OS of your VPN server. Default: Ubuntu 18.04",
+                "Description": "The OS of your VPN server. Default: Ubuntu 20.04",
                 "Default": "Ubuntu2004",
                 "AllowedValues": [
                     "Ubuntu2004"                
