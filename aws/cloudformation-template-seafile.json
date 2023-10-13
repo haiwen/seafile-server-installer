@@ -552,7 +552,7 @@
             },
             "SeafileVersion":{
                 "Type": "String",
-                "Description": "The version of the Seafile server release used. Default: 11.0",
+                "Description": "The version of the Seafile server release used. Default: 10.0",
                 "Default": "10.0",
                 "AllowedValues":[
                     "8.0",
