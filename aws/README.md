@@ -9,7 +9,7 @@ Available customization parameters:
 > </summary>
 > 
 > For example, you may not be able to deploy an `m5a.large` instance in `ap-east-1` (hypothetically). In that case, you might experience the following error during deployment: `The requested configuration is currently not supported. Please check the documentation for supported configurations`. Newly released regions are more prone to having this problem as there are less variety of instances. For more info about instance type availability, refer to [https://instances.vantage.sh/](https://instances.vantage.sh/).</details>
-- Seafile Version (8.0, 9.0, 10.0 or 11.0)
+- Seafile Version (8.0, 9.0 or 10.0)
 - OS Type (currently only Ubuntu 20.04 is supported)
 - Seafile Admin Password (accepted length: 8-30 characters)
 
@@ -17,7 +17,7 @@ Available customization parameters:
 
 Make sure to deploy this template with an **AWS Account Root User** or an **IAM Account** with **Administrator Access**.
 
-Right-click this [**template link**](https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/aws/cloudformation-template-seafile.json) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new). You may choose an AWS region using the selector to the right of your account information on the navigation bar. Continue creating the stack, and in the final step make sure to confirm that this template may create IAM resources.
+Right-click this [**template link**](https://raw.githubusercontent.com/scottpedia/seafile-server-installer/master/aws/cloudformation-template-seafile.json) and save as a file on your computer. Then upload it as the template source in the [stack creation wizard](https://console.aws.amazon.com/cloudformation/home#/stacks/new). You may choose an AWS region using the selector to the right of your account information on the navigation bar. Continue creating the stack, and in the final step make sure to confirm that this template may create IAM resources.
 
 After you click "create stack" in the final step, please wait for the stack creation and installation process to complete, which may take up to 15 minutes. As soon as the stack's status changes to **"CREATE_COMPLETE"**, you can use your browser to access the Seahub service. Click the **Outputs** tab to view your server login details. 
 
@@ -89,5 +89,5 @@ You may use the "Delete" button on the CloudFormation stack page to delete the C
 
 ## Author
 
-Copyright (C) 2020-2023 [Scott X. L.](https://github.com/scottpedia) <[wtanglef@pm.me](mailto:wtanglef@pm.me)>
+Copyright (C) 2023 [Scott X. L.](https://github.com/scottpedia) <[wtanglef@pm.me](mailto:wtanglef@pm.me)>
 
