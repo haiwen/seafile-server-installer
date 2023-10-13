@@ -436,7 +436,7 @@ cp ${INSTALLPATH}/check_init_admin.py ${INSTALLPATH}/check_init_admin.py.backup
 # -------------------------------------------
 # Set admin credentials in check_init_admin.py
 # -------------------------------------------
-if [ -z SEAFILE_ADMIN_PW]; then
+if [ -z "$SEAFILE_ADMIN_PW" ]; then
     SEAFILE_ADMIN_PW=$(pwgen)
 fi
 eval "sed -i 's/= ask_admin_email()/= \"${SEAFILE_ADMIN}\"/' ${INSTALLPATH}/check_init_admin.py"
