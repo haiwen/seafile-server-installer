@@ -38,7 +38,7 @@
                     "InstanceProfileName": {
                         "Ref": "KeyPair"
                     },
-                    "Path": "/setup-ipsec-vpn/",
+                    "Path": "/seafile-installer/",
                     "Roles": [
                         {
                             "Ref": "GeneralExecutionRole"
@@ -236,7 +236,7 @@
                         "Fn::Join": [
                             "-",
                             [
-                                "setup-ipsec-vpn",
+                                "seafile-installer",
                                 {
                                     "Ref": "AWS::StackName"
                                 }
@@ -248,7 +248,7 @@
             "SeafileSecurityGroup": {
                 "Type": "AWS::EC2::SecurityGroup",
                 "Properties": {
-                    "GroupDescription": "The VPN Security Group, allowing ingress TCP traffic at port 22(ssh) and port 80(http).",
+                    "GroupDescription": "The Seafile instance Security Group, allowing ingress TCP traffic at port 22(ssh) and port 80(http).",
                     "GroupName": "SeafileSecurityGroup",
                     "VpcId": {
                         "Ref": "SeafileVPC"
@@ -320,7 +320,6 @@
                                     "'''",
                                     "This python program should be embedded into its designated cloudformation",
                                     "template as the inline code of one of the lambda functions.",
-                                    "Its function is to create a random combination of 20 characters for the naming of the Ikev2S3Bucket, and",
                                     "to retrieve the private key material for display under the Outputs tab.",
                                     "'''",
                                     "def handler(event, context):",
@@ -328,7 +327,6 @@
                                     "       if event['RequestType'] == 'Delete':",
                                     "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {})",
                                     "       elif event['RequestType'] == 'Create':",
-                                    "           rCombination = 'setup-ipsec-vpn-' + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)).lower()",
                                     "           region = event['ResourceProperties']['Region']",
                                     "           ssm = boto3.client('ssm',region)",
                                     "           response = ssm.get_parameter(",
@@ -350,7 +348,7 @@
                                     "               WithDecryption=True",
                                     "           )",
                                     "           keyMaterial = response['Parameter']['Value']",
-                                    "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':keyMaterial, 'Combination':rCombination}, 'KeyPairDisplayFunctionInfo')",
+                                    "           cfnresponse.send(event, context, cfnresponse.SUCCESS, {'KeyMaterial':KeyMaterial}, 'KeyPairDisplayFunctionInfo')",
                                     "   except Exception as e:",
                                     "       cfnresponse.send(event, context, cfnresponse.FAILED, {'ErrorMsg':traceback.format_exc()})"
                                 ]
@@ -519,7 +517,7 @@
         "Parameters": {
             "OS": {
                 "Type": "String",
-                "Description": "The OS of your VPN server. Default: Ubuntu 18.04",
+                "Description": "The OS of your Seafile server. Default: Ubuntu 18.04",
                 "Default": "Ubuntu2004",
                 "AllowedValues": [
                     "Ubuntu2004"                
@@ -527,7 +525,7 @@
             },
             "InstanceType": {
                 "Type": "String",
-                "Description": "The instance type of your VPN server. Using t2.micro or t3.micro may qualify for the AWS Free Tier.",
+                "Description": "The instance type of your Seafile server. Using t2.micro or t3.micro may qualify for the AWS Free Tier.",
                 "AllowedValues": [
                     "t2.micro",
                     "t3.nano",
@@ -563,7 +561,7 @@
         },
         "Outputs": {
             "ServerAddress": {
-                "Description": "This is the public IP of your newly-launched Seafile server.",
+                "Description": "This is the URL of your newly-launched Seafile server.",
                 "Value": {
                     "Fn::Join":[
                         "",
