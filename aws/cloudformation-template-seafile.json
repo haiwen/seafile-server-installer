@@ -8,7 +8,7 @@
                     "",
                     "AWS Cloudformation Template for deploying Seafile Servers on AWS EC2,",
                     "based on the work of Seafile Ltd. : https://github.com/haiwen/seafile-server-installer",
-                    "The latest version of this template can be found at : https://github.com/haiwen/seafile-server-installer/aws",
+                    "The latest version of this template can be found at : https://github.com/scottpedi/seafile-server-installer/aws",
                     "",
                     "Copyright (C) 2023 Scott X. L. <wtanglef@pm.me>",
                     "",
@@ -566,9 +566,17 @@
             "ServerAddress": {
                 "Description": "This is the public IP of your newly-launched Seafile server.",
                 "Value": {
-                    "Fn::GetAtt": [
-                        "SeafileInstance",
-                        "PublicIp"
+                    "Fn::Join":[
+                        "",
+                        [
+                            "http://",
+                            {
+                                "Fn::GetAtt": [
+                                    "SeafileInstance",
+                                    "PublicIp"
+                                ]            
+                            }
+                        ]
                     ]
                 }
             },
