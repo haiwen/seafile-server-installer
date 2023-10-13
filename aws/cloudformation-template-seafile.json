@@ -517,7 +517,7 @@
         "Parameters": {
             "OS": {
                 "Type": "String",
-                "Description": "The OS of your Seafile server. Default: Ubuntu 18.04",
+                "Description": "The OS of your Seafile server. Default: Ubuntu 20.04",
                 "Default": "Ubuntu2004",
                 "AllowedValues": [
                     "Ubuntu2004"                
