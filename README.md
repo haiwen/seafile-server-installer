@@ -4,6 +4,7 @@ These installers offer a quick and easy way to set up a production ready Seafile
 
 Ubuntu 18.04/20.04 are supported now.
 
+You can also deploy to AWS EC2 using the Cloudformation template. For more info, see [this page](aws/README.md).
 
 ## Caution
 

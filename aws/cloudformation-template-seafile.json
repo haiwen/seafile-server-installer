@@ -28,9 +28,6 @@
         "OS": {
             "Ubuntu2004": {
                 "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
-            },
-            "Ubuntu1804": {
-                "HelperInstallationCommands": "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install python3-pip zip awscli\npython3 -m pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz\n"
             }
         }
     },
@@ -151,14 +148,23 @@
                                             "HelperInstallationCommands"
                                         ]
                                     },
-                                    "wget --no-check-certificate https://raw.githubusercontent.com/haiwen/seafile-server-installer/master/seafile-",
+                                    "cd /root\n",
+                                    "wget --no-check-certificate https://raw.githubusercontent.com/scottpedia/seafile-server-installer/master/seafile-",
                                     {
                                         "Ref": "SeafileVersion"
                                     },
                                     "_ubuntu\n",
-                                    "export SEAFILE_PRO=0",
-                                    "\n",
-                                    "bash seafile-",
+                                    "chmod +x ./seafile-",
+                                    {
+                                        "Ref": "SeafileVersion"
+                                    },
+                                    "_ubuntu\n",
+                                    "export SEAFILE_ADMIN_PW='",
+                                    {
+                                        "Ref": "SeafileAdminPassword"
+                                    },
+                                    "'; ",
+                                    "export SEAFILE_PRO=0; ./seafile-",
                                     {
                                         "Ref": "SeafileVersion"
                                     },
@@ -515,10 +521,9 @@
             "OS": {
                 "Type": "String",
                 "Description": "The OS of your VPN server. Default: Ubuntu 18.04",
-                "Default": "Ubuntu1804",
+                "Default": "Ubuntu2004",
                 "AllowedValues": [
-                    "Ubuntu2004",
-                    "Ubuntu1804"
+                    "Ubuntu2004"                
                 ]
             },
             "InstanceType": {
@@ -540,15 +545,20 @@
                 ],
                 "Default": "t2.micro"
             },
+            "SeafileAdminPassword":{
+                "Type": "String",
+                "Description": "Your seafile admin password.",
+                "MinLength": 8,
+                "MaxLength": 30
+            },
             "SeafileVersion":{
                 "Type": "String",
                 "Description": "The version of the Seafile server release used. Default: 11.0",
-                "Default": "11.0",
+                "Default": "10.0",
                 "AllowedValues":[
                     "8.0",
                     "9.0",
-                    "10.0",
-                    "11.0"
+                    "10.0"
                 ]
             }
         },
