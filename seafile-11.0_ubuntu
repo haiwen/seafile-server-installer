@@ -30,7 +30,7 @@ fi
 set -e
 
 if [[ "$#" -ne 1 ]]; then
-    echo "You must specif Seafile version to install"
+    echo "You must specify Seafile version to install"
     echo "Like: $0 11.0.0"
     exit 1
 fi
@@ -104,7 +104,7 @@ SEAFILE_SERVER_USER=seafile
 SEAFILE_SERVER_HOME=/opt/seafile
 IP_OR_DOMAIN=127.0.0.1
 SEAFILE_VERSION=$1
-TIME_ZONE=Europe/Berlin
+TIME_ZONE=America/New_York
 
 if is_pro; then
     SEAFILE_SERVER_PACKAGE=seafile-pro-server_${SEAFILE_VERSION}_x86-64.tar.gz
@@ -151,10 +151,10 @@ fi
 # -------------------------------------------
 apt-get update
 
-apt-get install -y python3 python3-dev python3-setuptools python3-pip python3-ldap memcached \
-    libmemcached-dev pwgen curl nginx libmysqlclient-dev ldap-utils libldap2-dev dnsutils
+apt-get install -y python3-full python3-dev python3-setuptools python3-pip python3-ldap memcached \
+    libmemcached-dev pwgen curl nginx default-libmysqlclient-dev ldap-utils libldap2-dev dnsutils sudo gcc
 
-pip3 install --timeout=3600 django==3.2.* future==0.18.* mysqlclient==2.1.* pymysql pillow==10.0.* pylibmc captcha==0.4 markupsafe==2.0.1 jinja2 sqlalchemy==2.0.18 psd-tools django-pylibmc django_simple_captcha==0.5.* djangosaml2==1.5.* pysaml2==7.2.* pycryptodome==3.16.* cffi==1.15.1 python-ldap==3.4.3 lxml
+pip3 install --break-system-packages --timeout=3600 django==3.2.* future==0.18.* mysqlclient==2.1.* pymysql pillow==10.0.* pylibmc captcha==0.4 markupsafe==2.0.1 jinja2 sqlalchemy==2.0.18 psd-tools django-pylibmc django_simple_captcha==0.5.* djangosaml2==1.5.* pysaml2==7.2.* pycryptodome==3.16.* cffi==1.15.1 python-ldap==3.4.3 lxml
 
 
 
@@ -172,7 +172,7 @@ log_format seafileformat '\$http_x_forwarded_for \$remote_addr [\$time_local] "\
 
 server {
     listen 80;
-    server_name seafile.example.com;
+    server_name 127.0.0.1;
 
     proxy_set_header X-Forwarded-For \$remote_addr;
 
@@ -250,13 +250,13 @@ then
   SQLROOTPW=`sed -n 's/password=//p' /root/.my.cnf`
 else
   # https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage/
-  curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.6"
-  DEBIAN_FRONTEND=noninteractive apt-get install -y mariadb-server-10.6
+  curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash -s -- --mariadb-server-version="mariadb-11.3.1"
+  DEBIAN_FRONTEND=noninteractive apt-get install -y mariadb-server
   service mysql start
 
   SQLROOTPW=$(pwgen)
 
-  mysqladmin -u root password $SQLROOTPW
+  mariadb-admin -u root password $SQLROOTPW
 
   cat > /root/.my.cnf <<EOF
 [client]
@@ -326,7 +326,8 @@ if ! is_pro && [[ ! -e /opt/${SEAFILE_SERVER_PACKAGE} ]]; then
 else
     cp /opt/${SEAFILE_SERVER_PACKAGE} .
 fi
-tar xzf ${SEAFILE_SERVER_PACKAGE}
+echo ${SEAFILE_SERVER_PACKAGE}
+tar xvf ${SEAFILE_SERVER_PACKAGE}
 
 mv ${SEAFILE_SERVER_PACKAGE} installed
 
