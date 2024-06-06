@@ -1,8 +1,11 @@
 # Auto install Seafile Server
 
+> Note, installation script will no longer be maintained for Seafile v12 and later versions. Please use Docker based installation method instead.
+
+
 These installers offer a quick and easy way to set up a production ready Seafile Server using MariaDB, Memcached and NGINX as a reverse proxy in under 5 minutes.
 
-Ubuntu 18.04/20.04 are supported now.
+Ubuntu 20.04 are supported now.
 
 
 ## Caution
