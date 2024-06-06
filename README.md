@@ -5,7 +5,7 @@
 
 These installers offer a quick and easy way to set up a production ready Seafile Server using MariaDB, Memcached and NGINX as a reverse proxy in under 5 minutes.
 
-Ubuntu 20.04 are supported now.
+Ubuntu 20.04/22.04 are supported now.
 
 
 ## Caution
