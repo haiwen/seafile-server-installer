@@ -466,6 +466,12 @@ if [[ -d /tmp/seafile-office-output/ ]]; then
 fi
 
 # -------------------------------------------
+# Allow standard HTTP port in ufw
+# -------------------------------------------
+echo "Allowing HTTP port 80 in ufw"
+ufw allow http
+
+# -------------------------------------------
 # Start seafile server
 # -------------------------------------------
 echo "Starting productive Seafile server"
