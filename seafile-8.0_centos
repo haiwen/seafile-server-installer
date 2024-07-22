@@ -174,7 +174,7 @@ systemctl status firewalld &> /dev/null \
 yum install epel-release -y
 
 yum install python3 python3-setuptools python3-pip python3-ldap memcached java-1.8.0-openjdk \
-    libmemcached libreoffice-headless libreoffice-pyuno libffi-devel pwgen curl python3-devel mysql-devel gcc gcc-c++ -y
+    libmemcached libreoffice-headless libreoffice-pyuno libffi-devel pwgen curl python3-devel mysql-devel gcc gcc-c++ libjpeg-devel -y
 
 pip3 install --timeout=3600 django==2.2.* future mysqlclient pymysql Pillow pylibmc captcha markupsafe==2.0.1 jinja2 sqlalchemy==1.4.3 \
     psd-tools django-pylibmc django-simple-captcha
